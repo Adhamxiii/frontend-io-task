@@ -1,0 +1,68 @@
+{
+  "navbar": {
+    "home": "Home",
+    "about": "About us",
+    "services": "Services",
+    "services1": "Services 1",
+    "services2": "Services 2",
+    "services3": "Services 3",
+    "services4": "Services 4",
+    "services5": "Services 5",
+    "blog": "Blog",
+    "ourTeam": "Our Team",
+    "contact": "Contact us",
+    "bookAppointment": "Book Appointment",
+    "search": "Search..."
+  },
+  "home": {
+    "hero": {
+      "title": "Lorem Ipsum",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      "readMore": "Read More"
+    },
+    "team": {
+      "title": "Our Team",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    },
+    "testimonials": {
+      "title": "What our clients are saying",
+      "description": "Our clients range from individual investors, to local, international as well as fortune 500 companies.Our clients range from individual investors, to local, international as well as fortune 500 companies."
+    }
+  },
+  "footer": {
+    "about": "About",
+    "ourStrategy": "Our Strategy",
+    "ourAdvantages": "Our Advantages",
+    "socialResponsibility": "Social Responsibility",
+    "ourServices": "Our Services",
+    "contact": "Contact",
+    "copyright": "© 2024 All rights reserved.",
+    "email": "Email",
+    "subscribe": "Subscribe",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "subscriptionSuccess": "Successfully subscribed to newsletter!",
+    "subscriptionError": "Failed to subscribe. Please try again.",
+    "alreadySubscribed": "This email is already subscribed"
+  },
+  "service": {
+    "back": "Back",
+    "title": "Legal Consultation Services",
+    "description": "Law Firm is one of the leading legal offices that offer exceptional advisory services for both individuals and companies.Our mission is to provide comprehensive and specialized legal support to meet our clients' needs and offer the best legal solutions in various cases and legal fields, we provide our legal consultations services as a follow:",
+    "generalLegalConsultations": "General Legal Consultations",
+    "generalLegalConsultationsDescription": "At Law Firm, we provide comprehensive legal consultations covering all legal aspects that our clients may encounter in their daily lives or business activities. Our goal is to offer accurate legal advice based on a deep understanding of local and international laws.",
+    "corporateLegalConsultations": "Corporate Legal Consultations",
+    "corporateLegalConsultationsDescription": "We at the Law Firm understand the importance of legal consultations for companies in building and enhancing their businesses.<br></br><br></br> Our advisory services about:",
+    "corporateLegalConsultationsDescription1": "Establishing and registering companies.",
+    "corporateLegalConsultationsDescription2": "All kinds of contracts and agreements.",
+    "corporateLegalConsultationsDescription3": "Commercial disputes.",
+    "corporateLegalConsultationsDescription4": "Compliance with local and international laws and regulations.",
+    "individualLegalConsultations": "Individual Legal Consultations",
+    "individualLegalConsultationsDescription": "Law Firm offers customized advisory services for individuals, including:",
+    "individualLegalConsultationsDescription1": "Family issues such as divorce, alimony, and custody.",
+    "individualLegalConsultationsDescription2": "Real estate matters like buying, selling, and renting properties.",
+    "individualLegalConsultationsDescription3": "Employment issues such as hiring and wrongful termination.",
+    "individualLegalConsultationsDescription4": "Criminal cases and defending personal rights.",
+    "conclusion": "At Law Firm, we aim to provide the best legal services to ensure your rights and offer effective legal solutions. Contact us today to receive professional and comprehensive legal consultation."
+  }
+}
