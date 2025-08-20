@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
+import { ChevronDownIcon } from "lucide-react";
 import { useLocale } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { ChevronDownIcon, Globe } from "lucide-react";
 
 const locales = [
   { code: "en", label: "English" },

@@ -1,11 +1,11 @@
 "use client";
 
+import { createSubscription } from "@/data/actions";
 import { Field, Form, Formik } from "formik";
 import { useTranslations } from "next-intl";
-import React, { useActionState, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Input } from "../ui/input";
-import { createSubscription } from "@/data/actions";
 
 interface SubscriptionFormValues {
   email: string;
@@ -19,7 +19,6 @@ const SubscriptionForm: React.FC = () => {
   const t = useTranslations("footer");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedEmails, setSubmittedEmails] = useState<string[]>([]);
-  const [formSate, formActions] = useActionState(createSubscription, null);
 
   const validateForm = (values: SubscriptionFormValues): ValidationErrors => {
     const errors: ValidationErrors = {};
@@ -53,7 +52,7 @@ const SubscriptionForm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-        const response = await createSubscription(values.email);
+      const response = await createSubscription(values.email);
 
       if (response.status === 200) {
         setSubmittedEmails((prev) => [...prev, values.email.toLowerCase()]);
@@ -76,10 +75,9 @@ const SubscriptionForm: React.FC = () => {
         initialValues={{ email: "" }}
         validate={validateForm}
         onSubmit={handleSubmit}
-        action={formActions}
       >
         {({ errors, touched }) => (
-          <Form className="relative" action={formActions}>
+          <Form className="relative">
             <div className="w-[223px] h-[41px] rounded-[6px] bg-white flex items-center pr-3.5">
               <Field
                 as={Input}
