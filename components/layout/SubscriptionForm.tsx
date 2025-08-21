@@ -1,24 +1,28 @@
 "use client";
 
 import { createSubscription } from "@/data/actions";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  resetStatus,
+  startSubmitting,
+  subscribeError,
+  subscribeSuccess,
+} from "@/store/slices/subscriptionSlice";
+import type { SubscriptionFormValues, ValidationErrors } from "@/types";
 import { Field, Form, Formik } from "formik";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Input } from "../ui/input";
 
-interface SubscriptionFormValues {
-  email: string;
-}
-
-interface ValidationErrors {
-  email?: string;
-}
-
 const SubscriptionForm: React.FC = () => {
   const t = useTranslations("footer");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedEmails, setSubmittedEmails] = useState<string[]>([]);
+  const dispatch = useAppDispatch();
+  const knownEmails = useAppSelector(
+    (s: any) => s.subscription?.knownEmails ?? []
+  );
 
   const validateForm = (values: SubscriptionFormValues): ValidationErrors => {
     const errors: ValidationErrors = {};
@@ -43,29 +47,38 @@ const SubscriptionForm: React.FC = () => {
       return;
     }
 
-    if (submittedEmails.includes(values.email.toLowerCase())) {
+    if (
+      submittedEmails.includes(values.email.toLowerCase()) ||
+      knownEmails.includes(values.email.toLowerCase())
+    ) {
       toast.error(t("alreadySubscribed"));
       setSubmitting(false);
       return;
     }
 
     setIsSubmitting(true);
+    dispatch(startSubmitting(values.email));
 
     try {
       const response = await createSubscription(values.email);
-
-      if (response.status === 200) {
+      const status = (response as any)?.error ? 400 : 200;
+      if (status === 200) {
         setSubmittedEmails((prev) => [...prev, values.email.toLowerCase()]);
+        dispatch(subscribeSuccess());
+        toast.success(t("subscriptionSuccess"));
+        resetForm();
+      } else {
+        dispatch(subscribeError((response as any)?.error));
+        toast.error(t("subscriptionError"));
       }
-
-      toast.success(t("subscriptionSuccess"));
-
-      resetForm();
     } catch (error) {
+      dispatch(subscribeError("network"));
       toast.error(t("subscriptionError"));
+      console.error(error);
     } finally {
       setIsSubmitting(false);
       setSubmitting(false);
+      dispatch(resetStatus());
     }
   };
 

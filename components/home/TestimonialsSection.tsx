@@ -11,13 +11,19 @@ import { Button } from "../ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { useTestimonialsData } from "@/hooks/useTestimonialsData";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import ErrorBoundary from "../ui/ErrorBoundary";
+import type { Testimonial } from "@/types";
+import { cn } from "@/lib/utils";
 
-const TestimonialsSection = ({ testimonials }: { testimonials: any }) => {
+function TestimonialsContent() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const t = useTranslations("home.testimonials");
   const locale = useLocale();
+  const { data, loading, error, refetch } = useTestimonialsData();
 
   useEffect(() => {
     if (!carouselApi) {
@@ -34,16 +40,101 @@ const TestimonialsSection = ({ testimonials }: { testimonials: any }) => {
     };
   }, [carouselApi]);
 
+  if (loading) {
+    return (
+      <section className="bg-primary w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[853px] mb-4 sm:mb-6 md:mb-8 lg:mb-[25px]">
+        <div className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-[100px] px-4 sm:px-8 md:px-16 lg:px-[121.55px] lg:pr-[83px]">
+          <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-[64.73px]">
+            <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-[26.27px]">
+              <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] text-center lg:text-left">
+                {t("title")}
+              </h1>
+              <p className="max-w-[579px] opacity-70 text-white text-sm sm:text-base md:text-lg font-normal text-center lg:text-left mx-auto lg:mx-0">
+                {t("description")}
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size="xl" variant="white" className="mx-auto mb-4" />
+              <p className="text-white ml-4">Loading testimonials...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="bg-primary w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[853px] mb-4 sm:mb-6 md:mb-8 lg:mb-[25px]">
+        <div className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-[100px] px-4 sm:px-8 md:px-16 lg:px-[121.55px] lg:pr-[83px]">
+          <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-[64.73px]">
+            <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-[26.27px]">
+              <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] text-center lg:text-left">
+                {t("title")}
+              </h1>
+              <p className="max-w-[579px] opacity-70 text-white text-sm sm:text-base md:text-lg font-normal text-center lg:text-left mx-auto lg:mx-0">
+                {t("description")}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="text-red-400 text-6xl mb-4">⚠️</div>
+              <h3 className="text-lg font-semibold text-white mb-2">Failed to Load Testimonials</h3>
+              <p className="text-white/80 mb-4">{error}</p>
+              <button 
+                onClick={refetch}
+                className="px-4 py-2 bg-white text-primary rounded-lg hover:bg-white/90 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!data?.data) {
+    return (
+      <section className="bg-primary w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[853px] mb-4 sm:mb-6 md:mb-8 lg:mb-[25px]">
+        <div className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-[100px] px-4 sm:px-8 md:px-16 lg:px-[121.55px] lg:pr-[83px]">
+          <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-[64.73px]">
+            <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-[26.27px]">
+              <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] text-center lg:text-left">
+                {t("title")}
+              </h1>
+              <p className="max-w-[579px] opacity-70 text-white text-sm sm:text-base md:text-lg font-normal text-center lg:text-left mx-auto lg:mx-0">
+                {t("description")}
+              </p>
+            </div>
+            <p className="text-white/80">No testimonials available</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const testimonials = data.data;
+
   return (
     <section className="bg-primary w-full min-h-[500px] sm:min-h-[600px] md:min-h-[700px] lg:h-[853px] mb-4 sm:mb-6 md:mb-8 lg:mb-[25px]">
-      <div className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-[100px] px-4 sm:px-8 md:px-16 lg:pl-[121.55px] lg:pr-[83px]">
+      <div className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-[100px] px-4 sm:px-8 md:px-16 lg:px-[121.55px] lg:pr-[83px]">
         <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-[64.73px]">
           <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-[26.27px]">
-            <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] text-center lg:text-left">
+            <h1
+              className={cn(
+                "text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] text-center",
+                locale === "ar" ? "lg:text-right" : "lg:text-left"
+              )}
+            >
               {t("title")}
             </h1>
 
-            <p className="max-w-[579px] opacity-70 text-white text-sm sm:text-base md:text-lg font-normal text-center lg:text-left mx-auto lg:mx-0">
+            <p
+              className={cn(
+                "max-w-[579px] opacity-70 text-white text-sm sm:text-base md:text-lg font-normal text-center",
+                locale === "ar" ? "lg:text-right" : "lg:text-left"
+              )}
+            >
               {t("description")}
             </p>
           </div>
@@ -61,7 +152,7 @@ const TestimonialsSection = ({ testimonials }: { testimonials: any }) => {
               }}
             >
               <CarouselContent className="gap-4 sm:gap-6 md:gap-8 lg:gap-0">
-                {testimonials.map((testimonial: any, index: number) => (
+                {testimonials.map((testimonial: Testimonial, index: number) => (
                   <CarouselItem key={index} className="">
                     <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 md:gap-10 lg:gap-[49px]">
                       <div className="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[350px] lg:w-[370px] h-[280px] sm:h-[320px] md:h-[350px] lg:h-[370px] relative shrink-0 mx-auto lg:mx-0">
@@ -70,17 +161,27 @@ const TestimonialsSection = ({ testimonials }: { testimonials: any }) => {
                           alt="testimonial"
                           fill
                           className="object-cover"
+                          sizes="(min-width: 1024px) 370px, (min-width: 768px) 350px, (min-width: 640px) 320px, 280px"
                         />
                       </div>
                       <div className="flex flex-col justify-between gap-6 sm:gap-8 md:gap-10 lg:gap-[101px]">
-                        <p className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-normal leading-relaxed sm:leading-relaxed md:leading-relaxed lg:leading-[40px] opacity-70 text-center lg:text-left">
+                        <p className={cn(
+                          "text-white text-base sm:text-lg md:text-xl lg:text-2xl font-normal leading-relaxed sm:leading-relaxed md:leading-relaxed lg:leading-[40px] opacity-70 text-center lg:text-left",
+                          locale === "ar" ? "lg:text-right" : "lg:text-left"
+                        )}>
                           {testimonial.message}
                         </p>
                         <div className="space-y-3 sm:space-y-4 md:space-y-5 text-center lg:text-left">
-                          <p className="text-white text-lg sm:text-xl md:text-2xl font-semibold leading-tight sm:leading-tight md:leading-tight lg:leading-[45px]">
+                          <p className={cn(
+                            "text-white text-lg sm:text-xl md:text-2xl font-semibold leading-tight sm:leading-tight md:leading-tight lg:leading-[45px]",
+                            locale === "ar" ? "lg:text-right" : "lg:text-left"
+                          )}>
                             {testimonial.name}
                           </p>
-                          <p className="text-white text-sm sm:text-base font-normal">
+                          <p className={cn(
+                            "text-white text-sm sm:text-base font-normal",
+                            locale === "ar" ? "lg:text-right" : "lg:text-left"
+                          )}>
                             {testimonial.role}
                           </p>
                         </div>
@@ -125,6 +226,14 @@ const TestimonialsSection = ({ testimonials }: { testimonials: any }) => {
         </div>
       </div>
     </section>
+  );
+}
+
+const TestimonialsSection = () => {
+  return (
+    <ErrorBoundary>
+      <TestimonialsContent />
+    </ErrorBoundary>
   );
 };
 

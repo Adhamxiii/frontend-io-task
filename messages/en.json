@@ -46,6 +46,8 @@
     "alreadySubscribed": "This email is already subscribed"
   },
   "service": {
+    "titlePage": "Services",
+    "content": "This page will list services from the CMS.",
     "back": "Back",
     "title": "Legal Consultation Services",
     "description": "Law Firm is one of the leading legal offices that offer exceptional advisory services for both individuals and companies.Our mission is to provide comprehensive and specialized legal support to meet our clients' needs and offer the best legal solutions in various cases and legal fields, we provide our legal consultations services as a follow:",
@@ -64,5 +66,29 @@
     "individualLegalConsultationsDescription3": "Employment issues such as hiring and wrongful termination.",
     "individualLegalConsultationsDescription4": "Criminal cases and defending personal rights.",
     "conclusion": "At Law Firm, we aim to provide the best legal services to ensure your rights and offer effective legal solutions. Contact us today to receive professional and comprehensive legal consultation."
+  },
+  "about": {
+    "title": "About",
+    "content": "This page will display About content."
+  },
+  "blog": {
+    "titlePage": "Blog",
+    "content": "This page will display Blog content."
+  },
+  "ourTeam": {
+    "titlePage": "Our Team",
+    "content": "This page will display Our Team content."
+  },
+  "contact": {
+    "titlePage": "Contact",
+    "content": "This page will display Contact content."
+  },
+  "search": {
+    "title": "Search",
+    "team": "Team",
+    "noTeamResults": "No team results",
+    "services": "Services",
+    "noServicesResults": "No services results",
+    "back": "Back"
   }
 }

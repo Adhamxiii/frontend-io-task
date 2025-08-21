@@ -4,6 +4,8 @@ import { ChevronDownIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { useAppDispatch } from "@/store/hooks";
+import { setLocale as setLocaleRedux } from "@/store/slices/languageSlice";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,7 @@ const LanguageSwitcher = () => {
   const currentLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
 
   const handleLanguageChange = (newLocale: string) => {
     const pathWithoutLocale = pathname.replace(`/${currentLocale}`, "");
@@ -27,6 +30,9 @@ const LanguageSwitcher = () => {
     const newPath = `/${newLocale}${pathWithoutLocale}`;
 
     router.push(newPath);
+    if (newLocale === "en" || newLocale === "ar") {
+      dispatch(setLocaleRedux(newLocale));
+    }
   };
 
   const currentLanguage = locales.find(

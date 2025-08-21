@@ -1,8 +1,9 @@
 "use server";
 
 import { fetchAPI } from "@/utils/fetch-api";
+import type { NewsletterResponse } from "@/types";
 
-export const createSubscription = async (email: string) => {
+export const createSubscription = async (email: string): Promise<NewsletterResponse | { error: string }> => {
   const url = new URL(
     "/api/newsletter-signups",
     process.env.NEXT_PUBLIC_STRAPI_URL

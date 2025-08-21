@@ -1,7 +1,15 @@
 "use client";
-import { Link } from "@/i18n/navigation";
+import { getServicesData } from "@/data/loaders";
+import { getNavLinks } from "@/data/routes";
+import { Link, useRouter } from "@/i18n/navigation";
 import LogoIcon from "@/public/icons/Logo";
-import React, { useState, useEffect } from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { setQuery as setSearchQuery } from "@/store/slices/searchSlice";
+import type { Service } from "@/types";
+import { Menu } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,13 +18,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
-import { Menu } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Button } from "../ui/button";
 import MobileMenu from "./MobileMenu";
 import ExtendableSearch from "./SearchBar";
-import { useLocale, useTranslations } from "next-intl";
-import { getNavLinks } from "@/data/routes";
 
 const SubMenuLink = ({ item }: { item: any }) => {
   return (
@@ -34,7 +38,12 @@ const renderMenuItem = (item: any) => {
     return (
       <NavigationMenuItem key={item.title}>
         <NavigationMenuTrigger className="bg-transparent hover:bg-transparent hover:text-white group-hover:text-white/50 text-white text-base font-normal leading-[26px] [&[data-state=open]]:text-white [&[data-state=open]]:!bg-transparent">
-          {item.title}
+          <NavigationMenuLink
+            href={item.url}
+            className="bg-transparent hover:bg-transparent hover:text-white group-hover:text-white/50 text-white text-base font-normal leading-[26px] [&[data-state=open]]:text-white [&[data-state=open]]:!bg-transparent focus:bg-transparent focus:text-white"
+          >
+            {item.title}
+          </NavigationMenuLink>
         </NavigationMenuTrigger>
         <NavigationMenuContent className="bg-primary text-white p-4 rounded-lg shadow-lg !w-[900px] grid grid-cols-4 gap-x-10 gap-y-4">
           {item.items.map((subItem: any) => (
@@ -51,7 +60,7 @@ const renderMenuItem = (item: any) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="bg-transparent hover:bg-transparent hover:text-white group-hover:text-white/50 group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 transition-colors text-white text-base font-normal leading-[26px]"
+        className="bg-transparent hover:bg-transparent hover:text-white group-hover:text-white/50 group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 transition-colors text-white text-base font-normal leading-[26px] focus:bg-transparent focus:text-white"
       >
         {item.title}
       </NavigationMenuLink>
@@ -62,15 +71,29 @@ const renderMenuItem = (item: any) => {
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const t = useTranslations("navbar");
+  const [services, setServices] = useState<Service[]>([]);
   const navLinks = getNavLinks(t);
   const locale = useLocale();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    (async () => {
+      try {
+        const res = await getServicesData({ revalidate: 300 });
+        const list = res?.data ?? [];
+        setServices(list);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
   }, []);
 
   const handleSearchSubmit = (query: string) => {
-    console.log("Searching for:", query);
+    dispatch(setSearchQuery(query));
+    const target = `/search?q=${encodeURIComponent(query)}`;
+    router.push(target);
   };
 
   return (
@@ -88,7 +111,20 @@ const Header = () => {
               <div className="flex items-center gap-[27px]">
                 <NavigationMenu dir={locale === "ar" ? "rtl" : "ltr"}>
                   <NavigationMenuList>
-                    {navLinks.map((item) => renderMenuItem(item))}
+                    {navLinks.map((item) => {
+                      if (item.title === t("services")) {
+                        const dynamic = {
+                          ...item,
+                          title: `${t("services")}`,
+                          items: services.map((s, idx) => ({
+                            title: `${t("services")} ${idx + 1}`,
+                            url: `/services/${s.slug}`,
+                          })),
+                        };
+                        return renderMenuItem(dynamic);
+                      }
+                      return renderMenuItem(item);
+                    })}
                   </NavigationMenuList>
                 </NavigationMenu>
               </div>

@@ -1,23 +1,23 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import type { HeroSectionProps, MediaItem } from "@/types";
+import { useLocale, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselApi,
 } from "../ui/carousel";
-import ReactPlayer from "react-player";
-import { useLocale, useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-
-type MediaItem = {
-  url: string;
-  ext?: string;
-  mime?: string;
-};
+import ErrorBoundary from "../ui/ErrorBoundary";
+const ReactPlayer = dynamic(() => import("react-player"), {
+  ssr: false,
+  loading: () => null,
+});
 
 const isVideoItem = (item?: MediaItem) => {
   if (!item) return false;
@@ -27,20 +27,12 @@ const isVideoItem = (item?: MediaItem) => {
   return typeof url === "string" && url.endsWith(".mp4");
 };
 
-const HeroSection = ({
-  heroBackground,
-  heroPhoto,
-}: {
-  heroBackground: MediaItem[];
-  heroPhoto: MediaItem;
-}) => {
+function HeroContent({ heroBackground, heroPhoto }: HeroSectionProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const t = useTranslations("home.hero");
   const locale = useLocale();
-
-  console.log(heroBackground);
 
   useEffect(() => {
     if (!api) {
@@ -57,6 +49,8 @@ const HeroSection = ({
 
   useEffect(() => {
     if (!api || current === 0) return;
+    if (!heroBackground || heroBackground.length === 0) return;
+
     const currentItem = heroBackground[current - 1];
     const isVideo = isVideoItem(currentItem);
     if (isVideo) return;
@@ -70,6 +64,16 @@ const HeroSection = ({
   const scrollTo = (index: number) => {
     api?.scrollTo(index);
   };
+
+  if (!heroBackground || heroBackground.length === 0 || !heroPhoto) {
+    return (
+      <section className="w-full h-[550px] sm:h-[600px] md:h-[700px] lg:h-[800px] xl:h-[850px] bg-primary relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-white">No hero content available</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full h-[550px] sm:h-[600px] md:h-[700px] lg:h-[800px] xl:h-[850px] bg-primary relative overflow-hidden">
@@ -104,6 +108,7 @@ const HeroSection = ({
                     fill
                     className="object-cover"
                     priority={index === 0}
+                    sizes="100vw"
                   />
                 )}
                 <div
@@ -164,11 +169,21 @@ const HeroSection = ({
               alt="hero-image"
               fill
               className="object-cover rounded-lg grayscale-75"
+              sizes="(min-width: 1024px) 374px, (min-width: 768px) 350px, (min-width: 640px) 320px, 180px"
+              priority
             />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+const HeroSection = ({ heroBackground, heroPhoto }: HeroSectionProps) => {
+  return (
+    <ErrorBoundary>
+      <HeroContent heroBackground={heroBackground} heroPhoto={heroPhoto} />
+    </ErrorBoundary>
   );
 };
 

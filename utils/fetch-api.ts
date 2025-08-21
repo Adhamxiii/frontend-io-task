@@ -1,10 +1,12 @@
+import type { ApiMethod } from "@/types";
+
 type NextFetchRequestConfig = {
   revalidate?: number | false;
   tags?: string[];
 };
 
 interface FetchAPIOptions {
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  method: ApiMethod;
   authToken?: string;
   body?: Record<string, unknown>;
   next?: NextFetchRequestConfig;

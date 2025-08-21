@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+"use client";
 
 import React from "react";
 import {
@@ -12,10 +12,98 @@ import Image from "next/image";
 import Whatapp from "@/public/icons/Whatapp";
 import Phone from "@/public/icons/Phone";
 import Mail from "@/public/icons/Mail";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useTeamData } from "@/hooks/useTeamData";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import ErrorBoundary from "../ui/ErrorBoundary";
+import type { TeamMember } from "@/types";
 
-const OurTeamSection = ({ team }: { team: any }) => {
+function TeamContent() {
   const t = useTranslations("home.team");
+  const locale = useLocale();
+  const { data, loading, error, refetch } = useTeamData();
+
+  if (loading) {
+    return (
+      <section className="bg-[#F3F3F3] w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:h-[746px]">
+        <div className="container mx-auto pt-8 sm:pt-12 md:pt-16 lg:pt-[126px] pb-8 sm:pb-12 md:pb-16 lg:pb-[92px] px-4 sm:px-8 md:px-16 lg:px-[115px]">
+          <div className="flex flex-col items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-[75px]">
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5">
+              <h1 className="text-primary text-center text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] tracking-[-0.4px] px-4">
+                {t("title")}
+              </h1>
+              <p className="max-w-[764px] text-center text-sm sm:text-base md:text-lg font-medium leading-relaxed sm:leading-relaxed md:leading-[28px] text-[#1E1E1E] px-4">
+                {t("description")}
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              <LoadingSpinner
+                size="xl"
+                variant="primary"
+                className="mx-auto mb-4"
+              />
+              <p className="text-gray-600 ml-4">Loading team members...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="bg-[#F3F3F3] w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:h-[746px]">
+        <div className="container mx-auto pt-8 sm:pt-12 md:pt-16 lg:pt-[126px] pb-8 sm:pb-12 md:pb-16 lg:pb-[92px] px-4 sm:px-8 md:px-16 lg:px-[115px]">
+          <div className="flex flex-col items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-[75px]">
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5">
+              <h1 className="text-primary text-center text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] tracking-[-0.4px] px-4">
+                {t("title")}
+              </h1>
+              <p className="max-w-[764px] text-center text-sm sm:text-base md:text-lg font-medium leading-relaxed sm:leading-relaxed md:leading-[28px] text-[#1E1E1E] px-4">
+                {t("description")}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="text-red-500 text-6xl mb-4">⚠️</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Failed to Load Team
+              </h3>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button
+                onClick={refetch}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!data?.data) {
+    return (
+      <section className="bg-[#F3F3F3] w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:h-[746px]">
+        <div className="container mx-auto pt-8 sm:pt-12 md:pt-16 lg:pt-[126px] pb-8 sm:pb-12 md:pb-16 lg:pb-[92px] px-4 sm:px-8 md:px-16 lg:px-[115px]">
+          <div className="flex flex-col items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-[75px]">
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5">
+              <h1 className="text-primary text-center text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[52px] tracking-[-0.4px] px-4">
+                {t("title")}
+              </h1>
+              <p className="max-w-[764px] text-center text-sm sm:text-base md:text-lg font-medium leading-relaxed sm:leading-relaxed md:leading-[28px] text-[#1E1E1E] px-4">
+                {t("description")}
+              </p>
+            </div>
+            <p className="text-gray-600">No team members available</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const team = data.data;
+
   return (
     <section className="bg-[#F3F3F3] w-full min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:h-[746px]">
       <div className="container mx-auto pt-8 sm:pt-12 md:pt-16 lg:pt-[126px] pb-8 sm:pb-12 md:pb-16 lg:pb-[92px] px-4 sm:px-8 md:px-16 lg:px-[115px]">
@@ -33,7 +121,7 @@ const OurTeamSection = ({ team }: { team: any }) => {
           <div className="w-full">
             <Carousel
               opts={{
-                direction: "ltr",
+                direction: locale === "ar" ? "rtl" : "ltr",
                 breakpoints: {
                   "(max-width: 768px)": {
                     dragFree: true,
@@ -43,7 +131,7 @@ const OurTeamSection = ({ team }: { team: any }) => {
               className="py-4 sm:py-6 md:py-8 lg:py-[23px]"
             >
               <CarouselContent className="gap-2 sm:gap-3 md:gap-4 md:justify-center">
-                {team.map((member: any, index: number) => (
+                {team.map((member: TeamMember, index: number) => (
                   <CarouselItem
                     key={index}
                     className="max-w-[200px] sm:max-w-[240px] md:max-w-[270px]"
@@ -55,6 +143,7 @@ const OurTeamSection = ({ team }: { team: any }) => {
                           alt="team-member"
                           fill
                           className="object-cover object-top"
+                          sizes="(min-width: 768px) 270px, (min-width: 640px) 240px, 200px"
                         />
                       </div>
 
@@ -88,6 +177,14 @@ const OurTeamSection = ({ team }: { team: any }) => {
         </div>
       </div>
     </section>
+  );
+}
+
+const OurTeamSection = () => {
+  return (
+    <ErrorBoundary>
+      <TeamContent />
+    </ErrorBoundary>
   );
 };
 

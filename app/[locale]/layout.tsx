@@ -1,12 +1,14 @@
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { DM_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
-import "./globals.css";
-import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
 import { Toaster } from "react-hot-toast";
+import "./globals.css";
+import Providers from "./providers";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     default: "IO-TECH Task",
     template: "%s | IO-TECH Task",
   },
-  description: "IO-TECH Task",
+  description: "IO-TECH Task - Professional services and solutions",
 };
 
 export default async function RootLayout({
@@ -33,13 +35,22 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <body className={dmSans.className}>
         <NextIntlClientProvider>
-          <Header />
-          <main className="min-h-screen relative bg-[#FAFAFA]">{children}</main>
-          <Footer />
+          <Providers>
+            <ErrorBoundary>
+              <Header />
+            </ErrorBoundary>
+            <main className="min-h-screen relative bg-[#FAFAFA]">
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </main>
+            <ErrorBoundary>
+              <Footer />
+            </ErrorBoundary>
+          </Providers>
           <Toaster
             position="top-right"
             toastOptions={{

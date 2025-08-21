@@ -1,10 +1,6 @@
 "use client";
 
-interface NavItem {
-  title: string;
-  url: string;
-  items?: NavItem[];
-}
+import type { NavItem, FooterLink } from '@/types';
 
 export const getNavLinks = (t: (key: string) => string): NavItem[] => [
   {
@@ -40,7 +36,7 @@ export const getNavLinks = (t: (key: string) => string): NavItem[] => [
   },
 ];
 
-export const getFooterLinks = (t: (key: string) => string) => {
+export const getFooterLinks = (t: (key: string) => string): FooterLink[] => {
   return [
     {
       title: t("about"),
