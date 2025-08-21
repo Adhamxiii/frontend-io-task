@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     template: "%s | IO-TECH Task",
   },
   description: "IO-TECH Task - Professional services and solutions",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default async function RootLayout({

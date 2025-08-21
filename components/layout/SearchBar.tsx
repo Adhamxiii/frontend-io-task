@@ -36,6 +36,7 @@ const ExtendableSearch = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchValue) {
       onSearch?.(searchValue);
+      setIsExpanded(false);
     }
   };
 
@@ -94,6 +95,7 @@ const ExtendableSearch = ({
                 value={searchValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                onBlur={() => setIsExpanded(false)}
                 className="h-full border-0 bg-transparent focus-visible:ring-0 pl-2 pr-4 text-white placeholder:text-white"
                 autoFocus
               />

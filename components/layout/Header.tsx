@@ -143,7 +143,7 @@ const Header = () => {
 
               <Button
                 variant="outline"
-                className="hidden md:flex w-[130px] h-10 rounded-[8px] border border-white text-white bg-transparent text-xs font-medium leading-[17.33px] hover:bg-white hover:text-primary text-center"
+                className="hidden md:flex w-[130px] h-10 rounded-[8px] border border-white text-white bg-transparent text-xs font-medium leading-[17.33px] hover:bg-white hover:text-primary text-center cursor-pointer"
               >
                 {t("bookAppointment")}
               </Button>

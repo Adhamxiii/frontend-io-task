@@ -6,18 +6,17 @@ import { getHeroData } from "@/data/loaders";
 
 export const metadata: Metadata = {
   title: "Home",
-  description: "Home",
+  description: "Home page",
 };
 
-export const revalidate = 300; // 5 minutes
+export const revalidate = 300;
 
 const Home: NextPage = async () => {
-  // Fetch hero data server-side for better performance
   const heroData = await getHeroData();
 
   return (
     <>
-      <HeroSection 
+      <HeroSection
         heroBackground={heroData.data[0]?.hero_background || []}
         heroPhoto={heroData.data[0]?.hero_photo}
       />

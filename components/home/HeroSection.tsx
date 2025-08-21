@@ -86,21 +86,29 @@ function HeroContent({ heroBackground, heroPhoto }: HeroSectionProps) {
         orientation="vertical"
         className="w-full h-full relative"
       >
-        <CarouselContent className="w-full h-[500px] sm:h-[600px] md:h-[700px] lg:h-[800px] xl:h-[850px] -mt-0">
+        <CarouselContent className="w-full h-[600px] md:h-[700px] lg:h-[800px] xl:h-[850px] -mt-0">
           {heroBackground.map((image: MediaItem, index: number) => (
             <CarouselItem key={index} className="w-full h-full pt-0 pl-0">
               <div className="relative w-full h-full">
                 {isVideoItem(image) ? (
-                  <ReactPlayer
-                    src={`${image.url}`}
-                    playing={current === index + 1}
-                    muted
-                    controls={false}
-                    width="100%"
-                    height="100%"
-                    onEnded={() => api?.scrollNext()}
-                    playsInline={true}
-                  />
+                  <div className="absolute inset-0 w-full h-full">
+                    <ReactPlayer
+                      src={`${image.url}`}
+                      playing={current === index + 1}
+                      muted
+                      controls={false}
+                      onEnded={() => api?.scrollNext()}
+                      playsInline={true}
+                      width="100%"
+                      height="100%"
+                      className="!absolute !inset-0 !w-full !h-full object-cover"
+                      style={{
+                        objectFit: "cover",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    />
+                  </div>
                 ) : (
                   <Image
                     src={`${image.url}`}
@@ -126,7 +134,7 @@ function HeroContent({ heroBackground, heroPhoto }: HeroSectionProps) {
 
       <div
         className={cn(
-          "absolute top-2/3 transform -translate-y-1/2 flex flex-col gap-3 z-10",
+          "absolute top-1/2 md:top-2/3 transform -translate-y-1/2 flex flex-col gap-3 z-10",
           locale === "ar"
             ? "right-4 sm:right-8 md:right-16 lg:right-[66px]"
             : "left-4 sm:left-8 md:left-16 lg:left-[66px]"
@@ -150,10 +158,20 @@ function HeroContent({ heroBackground, heroPhoto }: HeroSectionProps) {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 md:gap-16 lg:gap-[76px]">
           <div className="flex flex-col gap-8 sm:gap-12 md:gap-16 lg:gap-[66px] order-2 lg:order-1">
             <div className="flex flex-col gap-4 sm:gap-6 md:gap-8">
-              <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[48px] text-center lg:text-left">
+              <h1
+                className={cn(
+                  "text-white text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-bold leading-tight sm:leading-tight md:leading-tight lg:leading-[48px] text-center",
+                  locale === "ar" ? "lg:text-right" : "lg:text-left"
+                )}
+              >
                 {t("title")}
               </h1>
-              <p className="max-w-[700px] text-white text-sm sm:text-base md:text-lg font-medium leading-relaxed sm:leading-relaxed md:leading-[28px] text-center lg:text-left">
+              <p
+                className={cn(
+                  "max-w-[700px] text-white text-sm sm:text-base md:text-lg font-medium leading-relaxed sm:leading-relaxed md:leading-[28px] text-center",
+                  locale === "ar" ? "lg:text-right" : "lg:text-left"
+                )}
+              >
                 {t("description")}
               </p>
             </div>

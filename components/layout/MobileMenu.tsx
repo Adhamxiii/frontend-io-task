@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import LogoIcon from "@/public/icons/Logo";
 import { ChevronDownIcon, X } from "lucide-react";
@@ -7,6 +7,8 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { Button } from "../ui/button";
 import { getNavLinks } from "@/data/routes";
 import { useTranslations } from "next-intl";
+import { getServicesData } from "@/data/loaders";
+import type { Service } from "@/types";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -17,6 +19,19 @@ const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const t = useTranslations("navbar");
   const navLinks = getNavLinks(t);
+  const [services, setServices] = useState<Service[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await getServicesData({ revalidate: 300 });
+        const list = res?.data ?? [];
+        setServices(list);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenu(openSubmenu === title ? null : title);
@@ -48,7 +63,19 @@ const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
 
           <nav className="flex-1 overflow-y-auto p-6">
             <ul className="space-y-2">
-              {navLinks.map((item) => (
+              {(navLinks.map((item) => {
+                if (item.title === t("services")) {
+                  return {
+                    ...item,
+                    title: `${t("services")}`,
+                    items: services.map((s, idx) => ({
+                      title: `${t("services")} ${idx + 1}`,
+                      url: `/services/${s.slug}`,
+                    })),
+                  };
+                }
+                return item;
+              })).map((item) => (
                 <li key={item.title}>
                   {item.items ? (
                     <div>

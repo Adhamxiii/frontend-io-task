@@ -5,11 +5,16 @@ import type { Service } from "@/types";
 import { Metadata, NextPage } from "next";
 import Image from "next/image";
 
-export const metadata: Metadata = {
-  title: "Legal Consultation Services",
-  description:
-    "Professional legal consultation services for individuals and companies",
-};
+export async function generateMetadata({ params }: { params: Promise<{ "service-id": string }> }): Promise<Metadata> {
+  const { "service-id": serviceSlug } = await params;
+  const res = await getServiceBySlug(serviceSlug);
+  const service: Service | undefined = res.data?.[0];
+
+  return {
+    title: service?.title || "Service",
+    description: service?.description || "Professional legal consultation services for individuals and companies",
+  };
+}
 
 interface PageProps {
   params: Promise<{ "service-id": string }>;
