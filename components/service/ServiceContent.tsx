@@ -67,7 +67,7 @@ const ServiceContent: React.FC<Props> = ({ service }) => {
                       className={cn(
                         "w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-[10.3px] md:h-[11px] bg-[#4B2615] rounded-[2px] flex-shrink-0 absolute top-1.5",
                         locale === "ar"
-                          ? "right-4 sm:right-8 md:right-12 lg:right-[43px]"
+                          ? "right-4 sm:right-8 md:right-4"
                           : "left-4 sm:left-8 md:left-4"
                       )}
                     />
