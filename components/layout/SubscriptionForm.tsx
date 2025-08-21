@@ -40,7 +40,8 @@ const SubscriptionForm: React.FC = () => {
     values: SubscriptionFormValues,
     { resetForm, setSubmitting, setErrors }: any
   ) => {
-    const errors = validateForm(values);
+    const normalizedEmail = values.email.trim().toLowerCase();
+    const errors = validateForm({ email: normalizedEmail });
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       setSubmitting(false);
@@ -48,8 +49,8 @@ const SubscriptionForm: React.FC = () => {
     }
 
     if (
-      submittedEmails.includes(values.email.toLowerCase()) ||
-      knownEmails.includes(values.email.toLowerCase())
+      submittedEmails.includes(normalizedEmail) ||
+      knownEmails.includes(normalizedEmail)
     ) {
       toast.error(t("alreadySubscribed"));
       setSubmitting(false);
@@ -57,19 +58,24 @@ const SubscriptionForm: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    dispatch(startSubmitting(values.email));
+    dispatch(startSubmitting(normalizedEmail));
 
     try {
-      const response = await createSubscription(values.email);
-      const status = (response as any)?.error ? 400 : 200;
-      if (status === 200) {
-        setSubmittedEmails((prev) => [...prev, values.email.toLowerCase()]);
+      const response = await createSubscription(normalizedEmail);
+      const error = (response as any)?.error as string | undefined;
+      if (!error) {
+        setSubmittedEmails((prev) => [...prev, normalizedEmail]);
         dispatch(subscribeSuccess());
         toast.success(t("subscriptionSuccess"));
         resetForm();
       } else {
-        dispatch(subscribeError((response as any)?.error));
-        toast.error(t("subscriptionError"));
+        if (error === "duplicate") {
+          dispatch(subscribeError("duplicate"));
+          toast.error(t("alreadySubscribed"));
+        } else {
+          dispatch(subscribeError(error));
+          toast.error(t("subscriptionError"));
+        }
       }
     } catch (error) {
       dispatch(subscribeError("network"));
